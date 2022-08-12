@@ -1,55 +1,64 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import Squares from "./components/Squares.js";
+import { useState } from "react";
 
 // (what is the ratio of tiles that light up to total number of tiles?)
-// when play button is clicked, light up (change background to blue) all tiles corresponding to the y numbers that were randomly selected by Math.floor()
-// a click handler should be attached to each div/box
-// upon clicking a box, check if the tile's number corresponds to any of the numbers that were selected randomly
-// if yes, change background to green
-// if no, change background to red
 // keep count of wrong guesses
+// keep count of right guesses
+// keep count of total guesses
+// when all are found, use wins
+
 // width of grid needs to be dynamic based on difficulty level
-//
+// ie; 0 right out of 2 total with 0 mistakes.
+
+// 3 states: clear, blue, red/green
+
 function App() {
+  const [gridState, setGridState] = useState("clear");
   const [randomNums, setRandomNums] = useState([]);
-  const [showColoredSquares, setShowColoredSquares] = useState(false);
-  console.log(showColoredSquares);
-  console.log(randomNums);
-  const difficulty = 2; // should also be a piece of state too, grabbed from the slider
+  const [clickedNums, setClickedNums] = useState([]);
+
+  console.log(gridState);
+  // console.log(randomNums);
+  // console.log(clickedNums);
+  const difficulty = 3; // should be a piece of state, grabbed from the slider onClick play button
   const numBoxes = difficulty * difficulty;
   const grid = [];
 
   const handleClickStartGame = () => {
+    setClickedNums([]);
     const localRandomNums = [];
+
     let count = 1;
     while (count <= difficulty) {
       localRandomNums.push(Math.floor(Math.random() * numBoxes) + 1);
       count++;
-    }
+    } // remove dupes in randomNums array
 
     setRandomNums(localRandomNums);
-    setShowColoredSquares(true);
+    setGridState("blue");
 
     setTimeout(() => {
-      setShowColoredSquares(false);
+      setGridState("clear");
     }, 3000);
   };
 
-  const outputGrid = () => {
-    let colorClass = "";
+  const handleClickSquare = (e) => {
+    setClickedNums([...clickedNums, e.target.id]);
 
+    if (randomNums.length) setGridState("redGreen");
+  };
+
+  const outputGrid = () => {
     for (let i = 1; i <= numBoxes; i++) {
-      randomNums.forEach((randomNum) => {
-        if (showColoredSquares && randomNum === i) {
-          colorClass = " blue";
-        } else {
-          colorClass = "";
-        }
-      });
       grid.push(
-        <div className={`gridBox${colorClass}`} id={i}>
-          {i}
-        </div>
+        <Squares
+          onClick={handleClickSquare}
+          squareId={i}
+          gridState={gridState}
+          randomNums={randomNums}
+          clickedNums={clickedNums}
+        />
       );
     }
 
