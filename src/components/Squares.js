@@ -5,27 +5,26 @@ function Squares(props) {
   const squareId = props.squareId;
   const randomNums = props.randomNums;
   const clickedNums = props.clickedNums;
-  const gridState = props.gridState;
+  const squareState = props.squareState;
   let colorClass = "";
 
   randomNums.forEach((num) => {
     if (squareId === num)
-      if (gridState === "clear") {
+      if (squareState === "clear") {
         colorClass = "clear";
-      } else if (gridState === "blue") {
+      } else if (squareState === "blue") {
         colorClass = "blue";
       }
   });
 
   clickedNums.forEach((num) => {
-    if (gridState === "redGreen" && randomNums.includes(parseInt(num))) {
-      if (squareId === parseInt(num)) {
+    if (squareId === parseInt(num)) {
+      if (squareState === "redGreen" && randomNums.includes(parseInt(num))) {
         colorClass = "green";
-      }
-    }
-
-    if (gridState === "redGreen" && !randomNums.includes(parseInt(num))) {
-      if (squareId === parseInt(num)) {
+      } else if (
+        squareState === "redGreen" &&
+        !randomNums.includes(parseInt(num))
+      ) {
         colorClass = "red";
       }
     }
@@ -34,7 +33,7 @@ function Squares(props) {
   return (
     <div
       onClick={props.onClick}
-      className={`gridBox ${colorClass}`}
+      className={`gridSquare ${colorClass}`}
       id={squareId}
     ></div>
   );

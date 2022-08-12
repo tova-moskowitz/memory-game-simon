@@ -1,52 +1,52 @@
 import "./App.css";
 import Squares from "./components/Squares.js";
+import Slider from "./components/Slider.js";
 import { useState } from "react";
 
-// (what is the ratio of tiles that light up to total number of tiles?)
 // keep count of wrong guesses
 // keep count of right guesses
 // keep count of total guesses
-// when all are found, use wins
+// when all are found, player wins and message text changes
+// dedupe the randomNums array
+// slider and css to resize the grid dynamically
 
-// width of grid needs to be dynamic based on difficulty level
 // ie; 0 right out of 2 total with 0 mistakes.
 
-// 3 states: clear, blue, red/green
-
 function App() {
-  const [gridState, setGridState] = useState("clear");
+  const [squareState, setsquareState] = useState("clear");
   const [randomNums, setRandomNums] = useState([]);
   const [clickedNums, setClickedNums] = useState([]);
+  const [gridSize, setGridSize] = useState(5); // number will be grabbed from the slider onClick play button. It starts at gridSize 5 as the default
 
-  console.log(gridState);
-  // console.log(randomNums);
-  // console.log(clickedNums);
-  const difficulty = 3; // should be a piece of state, grabbed from the slider onClick play button
-  const numBoxes = difficulty * difficulty;
+  const numBoxes = gridSize * gridSize;
   const grid = [];
+
+  const handleChange = (event) => {
+    setGridSize(event.target.value);
+  };
 
   const handleClickStartGame = () => {
     setClickedNums([]);
     const localRandomNums = [];
 
     let count = 1;
-    while (count <= difficulty) {
+    while (count <= gridSize) {
       localRandomNums.push(Math.floor(Math.random() * numBoxes) + 1);
       count++;
     } // remove dupes in randomNums array
 
     setRandomNums(localRandomNums);
-    setGridState("blue");
+    setsquareState("blue");
 
     setTimeout(() => {
-      setGridState("clear");
-    }, 3000);
+      setsquareState("clear");
+    }, 2000);
   };
 
   const handleClickSquare = (e) => {
     setClickedNums([...clickedNums, e.target.id]);
 
-    if (randomNums.length) setGridState("redGreen");
+    if (randomNums.length) setsquareState("redGreen");
   };
 
   const outputGrid = () => {
@@ -55,13 +55,12 @@ function App() {
         <Squares
           onClick={handleClickSquare}
           squareId={i}
-          gridState={gridState}
+          squareState={squareState}
           randomNums={randomNums}
           clickedNums={clickedNums}
         />
       );
     }
-
     return grid;
   };
 
@@ -70,6 +69,14 @@ function App() {
       <button onClick={handleClickStartGame} className="button">
         PLAY!
       </button>
+      <Slider
+        onChange={handleChange}
+        className="slider"
+        size="small"
+        defaultValue={3}
+        aria-label="Small"
+        valueLabelDisplay="20"
+      />
       <div className="gameBoard">{outputGrid()}</div>
     </div>
   );

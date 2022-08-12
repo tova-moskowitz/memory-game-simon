@@ -18,9 +18,9 @@
   height: 450px;
 }
 
-.gridBox {
-  width: 146px;
-  height: 146px;
+.gridSquare {
+  width: 86px;
+  height: 86px;
   border: 1px black solid;
   text-align: center;
   margin: 1px;
@@ -40,4 +40,7 @@
 
 .red {
   background: red;
+}
+
+.slider {
 }
