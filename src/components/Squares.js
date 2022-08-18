@@ -1,11 +1,13 @@
 import "../App.js";
 import "../App.css";
 
-function Squares(props) {
-  const squareId = props.squareId;
-  const randomNums = props.randomNums;
-  const clickedNums = props.clickedNums;
-  const squareState = props.squareState;
+function Squares({
+  squareId,
+  randomNums,
+  clickedNums,
+  squareState,
+  handleClickSquare,
+}) {
   let colorClass = "";
 
   randomNums.forEach((num) => {
@@ -32,7 +34,7 @@ function Squares(props) {
 
   return (
     <div
-      onClick={props.onClick}
+      onClick={handleClickSquare}
       className={`gridSquare ${colorClass}`}
       id={squareId}
     ></div>

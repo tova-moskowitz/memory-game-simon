@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Slider from "@mui/material/Slider";
 
-export default function ContinuousSlider({ onChange }) {
+export default function ContinuousSlider({ handleChangeSlider }) {
   const [value, setValue] = React.useState(5);
 
   return (
@@ -12,7 +12,7 @@ export default function ContinuousSlider({ onChange }) {
         <Slider
           aria-label="Difficulty"
           value={value}
-          onChange={onChange}
+          onChange={handleChangeSlider}
           valueLabelDisplay="auto"
           min={2}
           max={20}

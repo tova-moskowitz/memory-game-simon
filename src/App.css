@@ -4,8 +4,7 @@
 
 .button {
   height: 50px;
-  margin-top: 50px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   width: 304px;
 }
 
@@ -42,5 +41,6 @@
   background: red;
 }
 
-.slider {
+h1 {
+  margin: 50px 0 10px 0;
 }
