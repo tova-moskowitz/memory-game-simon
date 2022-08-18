@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 // dedupe the randomNums array
 // slider is stuck
 // css to resize the grid dynamically
+// play button disappears when game is in progress
 
 // ie; 0 right out of 2 total with 0 mistakes.
 
@@ -19,12 +20,19 @@ function App() {
   const [clickedNums, setClickedNums] = useState([]);
   const [gridSize, setGridSize] = useState(5);
   const [correctGuesses, setCorrectGuesses] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameInProgress, setGameInProgress] = useState(false);
+  const [message, setMessage] = useState("");
 
   const numBoxes = gridSize * gridSize;
   const grid = [];
+  const messages = {
+    memorize: "Memorize the highlighted cells",
+    select: `Click the cells that were highlighted! x right out of ${gridSize} total with x mistakes.`,
+    win: "You got all of the boxes with x mistake(s)!",
+  };
 
   const handleChangeSlider = (event) => {
+    setGameInProgress(false);
     setGridSize(event.target.value);
     setRandomNums([]);
     setClickedNums([]);
@@ -32,8 +40,10 @@ function App() {
   };
 
   const handleClickStartGame = () => {
+    setMessage(messages.memorize);
     setClickedNums([]);
     setCorrectGuesses([]);
+    setGameInProgress(true);
 
     const localRandomNums = [];
 
@@ -47,6 +57,7 @@ function App() {
     setsquareState("blue");
 
     setTimeout(() => {
+      setMessage(messages.select);
       setsquareState("clear");
     }, 1000);
   };
@@ -64,8 +75,9 @@ function App() {
 
   useEffect(() => {
     if (correctGuesses.length && correctGuesses.length === randomNums.length) {
-      alert("WINNER");
-      setGameOver(true);
+      console.log("WINNER");
+      setMessage(messages.win);
+      setGameInProgress(false);
     }
   }, [correctGuesses]);
 
@@ -95,9 +107,12 @@ function App() {
         aria-label="Small"
         valueLabelDisplay="20"
       />
-      <button onClick={handleClickStartGame} className="button">
-        PLAY!
-      </button>
+      {!gameInProgress && (
+        <button onClick={handleClickStartGame} className="button">
+          PLAY!
+        </button>
+      )}
+      <div>{message}</div>
       <div className="gameBoard">{outputGrid()}</div>
     </div>
   );
