@@ -1,17 +1,14 @@
 import "./App.css";
-import Squares from "./components/Squares.js";
+import Squares from "./components/Squares";
 import Slider from "./components/Slider.js";
 import { useState, useEffect } from "react";
 
 // keep count of wrong guesses
 // keep count of right guesses
-// keep count of total guesses
-// when all are found, player wins and message text changes
 // dedupe the randomNums array
-// slider is stuck
-// css to resize the grid dynamically
-// play button disappears when game is in progress
-
+// slider doesn't move with window resizing
+// double-click on green shouldn't push into array
+// modal or super-imposed text when game is over
 // ie; 0 right out of 2 total with 0 mistakes.
 
 function App() {
@@ -22,12 +19,13 @@ function App() {
   const [correctGuesses, setCorrectGuesses] = useState([]);
   const [gameInProgress, setGameInProgress] = useState(false);
   const [message, setMessage] = useState("");
+  // const [value, setValue] = useState(5);
 
   const numBoxes = gridSize * gridSize;
   const grid = [];
   const messages = {
     memorize: "Memorize the highlighted cells",
-    select: `Click the cells that were highlighted! x right out of ${gridSize} total with x mistakes.`,
+    select: `Click the cells that were highlighted! ${correctGuesses.length} right out of ${gridSize} total with x mistakes.`,
     win: "You got all of the boxes with x mistake(s)!",
   };
 
@@ -63,7 +61,7 @@ function App() {
   };
 
   const handleClickSquare = (e) => {
-    if (randomNums.length) {
+    if (randomNums.length && gameInProgress) {
       setsquareState("redGreen");
       setClickedNums([...clickedNums, e.target.id]);
     }
@@ -79,9 +77,10 @@ function App() {
       setMessage(messages.win);
       setGameInProgress(false);
     }
-  }, [correctGuesses]);
+  }, [correctGuesses, messages.win, randomNums.length]);
 
   const outputGrid = () => {
+    const grid = [];
     for (let i = 1; i <= numBoxes; i++) {
       grid.push(
         <Squares
@@ -113,7 +112,14 @@ function App() {
         </button>
       )}
       <div>{message}</div>
-      <div className="gameBoard">{outputGrid()}</div>
+      <div
+        className="gameBoard"
+        style={{
+          gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+        }}
+      >
+        {outputGrid()}
+      </div>
     </div>
   );
 }

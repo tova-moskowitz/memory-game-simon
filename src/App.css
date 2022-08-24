@@ -3,30 +3,25 @@
 }
 
 .button {
+  font-size: 1.5rem;
   height: 50px;
   margin-bottom: 10px;
   width: 304px;
 }
 
 .gameBoard {
+  display: grid;
+  gap: 5px;
   text-align: center;
-  display: flex;
-  flex-wrap: wrap;
   margin: auto;
-  width: 450px;
-  height: 450px;
+  width: 500px;
+  height: 500px;
 }
 
 .gridSquare {
-  width: 86px;
-  height: 86px;
-  border: 1px black solid;
-  text-align: center;
-  margin: 1px;
+  border: 1px solid black;
   border-radius: 5px;
-}
-.clear {
-  background: white;
+  background: lavender;
 }
 
 .blue {
