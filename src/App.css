@@ -1,12 +1,21 @@
+@import url("https://fonts.googleapis.com/css?family=Didact+Gothic");
+
 .game {
   text-align: center;
 }
 
 .button {
-  font-size: 1.5rem;
+  font-size: 1rem;
   height: 50px;
+  padding: 7px;
   margin-bottom: 10px;
-  width: 304px;
+  width: 5rem;
+}
+
+.message {
+  font-family: "Didact Gothic";
+  font-size: 20px;
+  margin: 20px;
 }
 
 .gameBoard {
@@ -21,7 +30,7 @@
 .gridSquare {
   border: 1px solid black;
   border-radius: 5px;
-  background: lavender;
+  background: #d7c8e3;
 }
 
 .blue {
@@ -39,3 +48,47 @@
 h1 {
   margin: 50px 0 10px 0;
 }
+
+.modal {
+  position: absolute;
+  left: 28%;
+  top: 25%;
+  width: 600px;
+  height: 200px;
+  /* padding: 20px; */
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: "Didact Gothic";
+  border: 2px black solid;
+  border-radius: 10px;
+  background: #aad2f0;
+}
+
+.modalWinMessage {
+  font-size: 20px;
+}
+
+.modalButton {
+  letter-spacing: 1px;
+  background: white;
+  font-size: 1rem;
+  font-family: "Didact Gothic";
+  height: 50px;
+  padding: 7px;
+  width: 10rem;
+  text-transform: uppercase;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.youWin {
+  font-size: 30px;
+}
+
+/* @media only screen and (max-width: 500px) {
+  .game  {
+    text-align: center;
+    background: red;
+    grid-template-columns: 1fr;
+  }
+} */

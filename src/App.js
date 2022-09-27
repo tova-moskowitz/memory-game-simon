@@ -6,27 +6,33 @@ import { useState, useEffect } from "react";
 // keep count of wrong guesses
 // keep count of right guesses
 // dedupe the randomNums array
-// slider doesn't move with window resizing
+// slider doesn't stay with other elements on page on resizing
 // double-click on green shouldn't push into array
-// modal or super-imposed text when game is over
+// double-click on red shouldn't push into array
+// modal- make css responsive
 // ie; 0 right out of 2 total with 0 mistakes.
+// refactor so that there's very little logic in Squares.js
+// refactor so that I'm not using colors as class names
+// hint mode
+// a11y mode
 
 function App() {
   const [squareState, setsquareState] = useState("clear");
   const [randomNums, setRandomNums] = useState([]);
   const [clickedNums, setClickedNums] = useState([]);
-  const [gridSize, setGridSize] = useState(5);
+  const [gridSize, setGridSize] = useState(2);
   const [correctGuesses, setCorrectGuesses] = useState([]);
   const [gameInProgress, setGameInProgress] = useState(false);
   const [message, setMessage] = useState("");
-  // const [value, setValue] = useState(5);
+  const [mistakesCount, setMistakesCount] = useState(0);
 
   const numBoxes = gridSize * gridSize;
-  const grid = [];
+  const hints = [];
   const messages = {
-    memorize: "Memorize the highlighted cells",
-    select: `Click the cells that were highlighted! ${correctGuesses.length} right out of ${gridSize} total with x mistakes.`,
-    win: "You got all of the boxes with x mistake(s)!",
+    memorize:
+      "Memorize the highlighted cells then click the cells that were highlighted!",
+    select: `${correctGuesses.length} right out of ${gridSize} total with ${mistakesCount} mistakes.`,
+    win: `You got all the boxes with ${mistakesCount} mistake(s)!`,
   };
 
   const handleChangeSlider = (event) => {
@@ -34,14 +40,14 @@ function App() {
     setGridSize(event.target.value);
     setRandomNums([]);
     setClickedNums([]);
-    setCorrectGuesses([]);
+    // setCorrectGuesses([]);
   };
 
   const handleClickStartGame = () => {
     setMessage(messages.memorize);
     setClickedNums([]);
-    setCorrectGuesses([]);
     setGameInProgress(true);
+    setMistakesCount(0);
 
     const localRandomNums = [];
 
@@ -55,19 +61,25 @@ function App() {
     setsquareState("blue");
 
     setTimeout(() => {
-      setMessage(messages.select);
       setsquareState("clear");
     }, 1000);
+    setCorrectGuesses([]);
   };
 
   const handleClickSquare = (e) => {
+    setMessage(messages.select);
     if (randomNums.length && gameInProgress) {
       setsquareState("redGreen");
       setClickedNums([...clickedNums, e.target.id]);
     }
 
-    if (randomNums.includes(parseInt(e.target.id))) {
+    if (
+      randomNums.includes(parseInt(e.target.id)) &&
+      !correctGuesses.includes(e.target.id)
+    ) {
       setCorrectGuesses((correctGuesses) => [...correctGuesses, e.target.id]);
+    } else {
+      setMistakesCount((mistakesCount) => mistakesCount + 1);
     }
   };
 
@@ -95,6 +107,29 @@ function App() {
     return grid;
   };
 
+  const handleClickHintButton = (e) => {
+    hints.push(Math.floor(Math.random() * randomNums.length) + 1);
+
+    console.log(hints);
+  };
+
+  const outputWinnerModal = () => {
+    return (
+      <>
+        <div className="modal">
+          Congratulations
+          <div className="youWin">
+            You won!
+            <p className="modalWinMessage">{messages.win}</p>
+            <button onClick={handleClickStartGame} className="modalButton">
+              Play Again?
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="game">
       <h1>Memory Game</h1>
@@ -111,13 +146,23 @@ function App() {
           PLAY!
         </button>
       )}
-      <div>{message}</div>
+      <div className="message">{message}</div>
+      {gameInProgress && (
+        <button onClick={handleClickHintButton} className="getHint">
+          Need a hint?
+        </button>
+      )}
       <div
         className="gameBoard"
         style={{
           gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
         }}
       >
+        {!gameInProgress &&
+        randomNums.length &&
+        correctGuesses.length === randomNums.length
+          ? outputWinnerModal()
+          : null}
         {outputGrid()}
       </div>
     </div>
@@ -125,3 +170,8 @@ function App() {
 }
 
 export default App;
+
+// dedupe
+// fix multiple clicks on same box counts as correct guess ---
+// hint button
+// mistakes count lags behind one click
