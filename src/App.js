@@ -7,32 +7,35 @@ import { useState, useEffect } from "react";
 // keep count of right guesses
 // dedupe the randomNums array
 // slider doesn't stay with other elements on page on resizing
-// double-click on green shouldn't push into array
-// double-click on red shouldn't push into array
+// double-click on green shouldn't push into array --------
+// double-click on red shouldn't increment mistakesCount
 // modal- make css responsive
 // ie; 0 right out of 2 total with 0 mistakes.
 // refactor so that there's very little logic in Squares.js
 // refactor so that I'm not using colors as class names
 // hint mode
 // a11y mode
+// mistakes count lags behind one click
+// shouldn't count mistakes before start is clicked
+// shouldn't count mistakes if already counted that click as a mistake once
 
 function App() {
-  const [squareState, setsquareState] = useState("clear");
+  const [squareState, setSquareState] = useState("clear");
   const [randomNums, setRandomNums] = useState([]);
   const [clickedNums, setClickedNums] = useState([]);
-  const [gridSize, setGridSize] = useState(2);
+  const [gridSize, setGridSize] = useState(4);
   const [correctGuesses, setCorrectGuesses] = useState([]);
   const [gameInProgress, setGameInProgress] = useState(false);
   const [message, setMessage] = useState("");
   const [mistakesCount, setMistakesCount] = useState(0);
+  const [hints, setHints] = useState([]);
 
   const numBoxes = gridSize * gridSize;
-  const hints = [];
   const messages = {
     memorize:
       "Memorize the highlighted cells then click the cells that were highlighted!",
     select: `${correctGuesses.length} right out of ${gridSize} total with ${mistakesCount} mistakes.`,
-    win: `You got all the boxes with ${mistakesCount} mistake(s)!`,
+    win: `Congratulations! You got all the boxes with ${mistakesCount} mistake(s)!`,
   };
 
   const handleChangeSlider = (event) => {
@@ -40,6 +43,7 @@ function App() {
     setGridSize(event.target.value);
     setRandomNums([]);
     setClickedNums([]);
+    setHints([]);
     // setCorrectGuesses([]);
   };
 
@@ -48,6 +52,7 @@ function App() {
     setClickedNums([]);
     setGameInProgress(true);
     setMistakesCount(0);
+    setHints([]);
 
     const localRandomNums = [];
 
@@ -58,10 +63,10 @@ function App() {
     } // remove dupes in randomNums array
 
     setRandomNums(localRandomNums);
-    setsquareState("blue");
+    setSquareState("blue");
 
     setTimeout(() => {
-      setsquareState("clear");
+      setSquareState("clear");
     }, 1000);
     setCorrectGuesses([]);
   };
@@ -69,7 +74,7 @@ function App() {
   const handleClickSquare = (e) => {
     setMessage(messages.select);
     if (randomNums.length && gameInProgress) {
-      setsquareState("redGreen");
+      setSquareState("redGreen");
       setClickedNums([...clickedNums, e.target.id]);
     }
 
@@ -85,11 +90,10 @@ function App() {
 
   useEffect(() => {
     if (correctGuesses.length && correctGuesses.length === randomNums.length) {
-      console.log("WINNER");
       setMessage(messages.win);
       setGameInProgress(false);
     }
-  }, [correctGuesses, messages.win, randomNums.length]);
+  }, [correctGuesses]);
 
   const outputGrid = () => {
     const grid = [];
@@ -108,8 +112,16 @@ function App() {
   };
 
   const handleClickHintButton = (e) => {
-    hints.push(Math.floor(Math.random() * randomNums.length) + 1);
+    const hint = randomNums[Math.floor(Math.random() * randomNums.length)];
+    if (!hints.includes(hint)) {
+      setHints([...hints, hint]);
+    }
+    setSquareState("hint");
 
+    setTimeout(() => {
+      setSquareState("clear");
+    }, 1000);
+    setCorrectGuesses([]);
     console.log(hints);
   };
 
@@ -117,7 +129,6 @@ function App() {
     return (
       <>
         <div className="modal">
-          Congratulations
           <div className="youWin">
             You won!
             <p className="modalWinMessage">{messages.win}</p>
@@ -137,7 +148,7 @@ function App() {
       <Slider
         handleChangeSlider={handleChangeSlider}
         size="small"
-        defaultValue={3}
+        defaultValue={4}
         aria-label="Small"
         valueLabelDisplay="20"
       />
@@ -170,8 +181,3 @@ function App() {
 }
 
 export default App;
-
-// dedupe
-// fix multiple clicks on same box counts as correct guess ---
-// hint button
-// mistakes count lags behind one click
